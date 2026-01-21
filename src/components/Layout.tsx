@@ -8,7 +8,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: PlusCircle, label: "New Jobs", path: "/jobs" },
-    { icon: FileText, label: "Ready to Apply", path: "/ready" },
+    { icon: FileText, label: "Master Resume", path: "/resume" },
+    { icon: Briefcase, label: "Ready to Apply", path: "/ready" },
     { icon: History, label: "Applied", path: "/applied" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];

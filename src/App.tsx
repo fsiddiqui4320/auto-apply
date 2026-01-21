@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Settings from './pages/Settings'
 import Jobs from './pages/Jobs'
+import Resume from './pages/Resume'
+import Ready from './pages/Ready'
 import './App.css'
 
 function App() {
@@ -9,6 +11,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Dashboard />} />
       <Route path="/jobs" element={<Jobs />} />
+      <Route path="/resume" element={<Resume />} />
+      <Route path="/ready" element={<Ready />} />
       <Route path="/settings" element={<Settings />} />
     </Routes>
   )

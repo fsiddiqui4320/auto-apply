@@ -4,8 +4,8 @@ import type { JobAnalysis, MasterResume } from "@/types";
 export const ResumeTailor = {
     async generateTailoredResume(jobAnalysis: JobAnalysis, masterResume: MasterResume): Promise<string> {
         const settings = StorageManager.get().settings;
-        if (!settings.anthropic_api_key) {
-            throw new Error("Anthropic API Key is missing");
+        if (!settings.openai_api_key) {
+            throw new Error("OpenAI API Key is missing");
         }
 
         const SYSTEM_PROMPT = `
@@ -35,29 +35,28 @@ Required Skills from Job: ${jobAnalysis.technical_skills.join(", ")}
 Return the complete tailored LaTeX resume. Do not wrap in markdown code blocks, just return the raw LaTeX string.
 `;
 
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'x-api-key': settings.anthropic_api_key,
-                'anthropic-version': '2023-06-01',
-                'content-type': 'application/json',
-                'dangerously-allow-browser': 'true'
+                'Authorization': `Bearer ${settings.openai_api_key}`,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'claude-3-haiku-20240307',
-                max_tokens: 4000,
-                system: SYSTEM_PROMPT,
-                messages: [{ role: 'user', content: USER_PROMPT }]
+                model: 'gpt-4o',
+                messages: [
+                    { role: 'system', content: SYSTEM_PROMPT },
+                    { role: 'user', content: USER_PROMPT }
+                ]
             })
         });
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(`Anthropic API Error: ${error.error?.message || response.statusText}`);
+            throw new Error(`OpenAI API Error: ${error.error?.message || response.statusText}`);
         }
 
         const data = await response.json();
-        let text = data.content[0].text;
+        let text = data.choices[0].message.content;
 
         // Cleanup markdown wrapping if present
         if (text.startsWith('```latex')) text = text.replace(/^```latex\n/, '').replace(/\n```$/, '');
@@ -69,7 +68,7 @@ Return the complete tailored LaTeX resume. Do not wrap in markdown code blocks, 
     async generateCoverLetter(jobAnalysis: JobAnalysis): Promise<string> {
         const settings = StorageManager.get().settings;
         const profile = StorageManager.get().user_profile;
-        if (!settings.anthropic_api_key) throw new Error("Anthropic API Key is missing");
+        if (!settings.openai_api_key) throw new Error("OpenAI API Key is missing");
 
         const PROMPT = `
 Generate a professional cover letter for this internship application.
@@ -93,23 +92,20 @@ ${JSON.stringify(profile.education)}
 Generate cover letter:
 `;
 
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'x-api-key': settings.anthropic_api_key,
-                'anthropic-version': '2023-06-01',
-                'content-type': 'application/json',
-                'dangerously-allow-browser': 'true'
+                'Authorization': `Bearer ${settings.openai_api_key}`,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'claude-3-haiku-20240307',
-                max_tokens: 1000,
+                model: 'gpt-4o',
                 messages: [{ role: 'user', content: PROMPT }]
             })
         });
 
-        if (!response.ok) throw new Error(`Anthropic API Error: ${response.statusText}`);
+        if (!response.ok) throw new Error(`OpenAI API Error: ${response.statusText}`);
         const data = await response.json();
-        return data.content[0].text;
+        return data.choices[0].message.content;
     }
 };

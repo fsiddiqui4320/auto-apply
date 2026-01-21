@@ -36,13 +36,13 @@ export default function Settings() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">API Configuration</h2>
             <div className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Anthropic API Key</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">OpenAI API Key</label>
                     <input 
                         type="password"
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                        placeholder="sk-ant-..."
-                        value={settings.anthropic_api_key || ''}
-                        onChange={(e) => setSettings({...settings, anthropic_api_key: e.target.value})}
+                        placeholder="sk-..."
+                        value={settings.openai_api_key || ''}
+                        onChange={(e) => setSettings({...settings, openai_api_key: e.target.value})}
                     />
                     <p className="text-xs text-gray-500 mt-1">Required for job analysis and resume tailoring. Key is stored locally in your browser.</p>
                 </div>

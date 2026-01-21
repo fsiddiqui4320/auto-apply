@@ -103,7 +103,7 @@ export interface AppSettings {
     auto_check_time: string;
     notification_enabled: boolean;
     preferred_locations: string[];
-    anthropic_api_key?: string;
+    openai_api_key?: string;
     github_token?: string;
 }
 

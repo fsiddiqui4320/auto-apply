@@ -29,8 +29,8 @@ export const JobAnalyzer = {
 
     async analyze(htmlContent: string): Promise<JobAnalysis> {
         const settings = StorageManager.get().settings;
-        if (!settings.anthropic_api_key) {
-            throw new Error("Anthropic API Key is missing in Settings");
+        if (!settings.openai_api_key) {
+            throw new Error("OpenAI API Key is missing in Settings");
         }
 
         const ANALYSIS_PROMPT = `
@@ -53,33 +53,27 @@ HTML Content:
 ${htmlContent.substring(0, 15000)} // Truncate to avoid context limits
 `;
 
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'x-api-key': settings.anthropic_api_key,
-                'anthropic-version': '2023-06-01',
-                'content-type': 'application/json',
-                'dangerously-allow-browser': 'true' // Client-side call
+                'Authorization': `Bearer ${settings.openai_api_key}`,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'claude-3-haiku-20240307',
-                max_tokens: 1500,
-                messages: [{ role: 'user', content: ANALYSIS_PROMPT }]
+                model: 'gpt-4o',
+                messages: [{ role: 'user', content: ANALYSIS_PROMPT }],
+                response_format: { type: "json_object" }
             })
         });
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(`Anthropic API Error: ${error.error?.message || response.statusText}`);
+            throw new Error(`OpenAI API Error: ${error.error?.message || response.statusText}`);
         }
 
         const data = await response.json();
-        const jsonStr = data.content[0].text;
+        const jsonStr = data.choices[0].message.content;
 
-        // Extract JSON from response (sometimes strictly formatted, sometimes not)
-        const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error("Failed to parse JSON from AI response");
-
-        return JSON.parse(jsonMatch[0]);
+        return JSON.parse(jsonStr);
     }
 };

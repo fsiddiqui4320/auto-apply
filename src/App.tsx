@@ -4,6 +4,7 @@ import Settings from './pages/Settings'
 import Jobs from './pages/Jobs'
 import Resume from './pages/Resume'
 import Ready from './pages/Ready'
+import Applied from './pages/Applied'
 import './App.css'
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Route path="/jobs" element={<Jobs />} />
       <Route path="/resume" element={<Resume />} />
       <Route path="/ready" element={<Ready />} />
+      <Route path="/applied" element={<Applied />} />
       <Route path="/settings" element={<Settings />} />
     </Routes>
   )

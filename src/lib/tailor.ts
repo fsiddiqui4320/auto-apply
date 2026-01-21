@@ -64,5 +64,52 @@ Return the complete tailored LaTeX resume. Do not wrap in markdown code blocks, 
         if (text.startsWith('```')) text = text.replace(/^```\n/, '').replace(/\n```$/, '');
 
         return text;
+    },
+
+    async generateCoverLetter(jobAnalysis: JobAnalysis): Promise<string> {
+        const settings = StorageManager.get().settings;
+        const profile = StorageManager.get().user_profile;
+        if (!settings.anthropic_api_key) throw new Error("Anthropic API Key is missing");
+
+        const PROMPT = `
+Generate a professional cover letter for this internship application.
+
+Template structure:
+- Opening: Express enthusiasm for specific role and company
+- Body paragraph 1: Highlight 2-3 relevant experiences/projects that match job requirements
+- Body paragraph 2: Explain why you're interested in this company specifically
+- Closing: Thank them and express interest in discussing further
+
+Keep it concise (3 paragraphs), professional, and genuine.
+Use keywords from job description naturally.
+
+Job Details:
+Job Analysis: ${JSON.stringify(jobAnalysis)}
+
+Candidate Profile: 
+${JSON.stringify(profile.personal_info)}
+${JSON.stringify(profile.education)}
+
+Generate cover letter:
+`;
+
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'x-api-key': settings.anthropic_api_key,
+                'anthropic-version': '2023-06-01',
+                'content-type': 'application/json',
+                'dangerously-allow-browser': 'true'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-haiku-20240307',
+                max_tokens: 1000,
+                messages: [{ role: 'user', content: PROMPT }]
+            })
+        });
+
+        if (!response.ok) throw new Error(`Anthropic API Error: ${response.statusText}`);
+        const data = await response.json();
+        return data.content[0].text;
     }
 };

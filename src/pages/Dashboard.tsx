@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import { StorageManager } from "@/lib/storage";
 import { GitHubScraper } from "@/lib/scraper";
-import { AppData } from "@/types";
+import type { AppData } from "@/types";
 import { RefreshCw, Play, CheckCircle, XCircle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 

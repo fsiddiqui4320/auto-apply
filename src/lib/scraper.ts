@@ -1,5 +1,5 @@
 import { StorageManager } from "./storage";
-import { JobSeen, Job } from "@/types";
+import type { JobSeen, Job } from "@/types";
 
 const GITHUB_API = 'https://api.github.com/repos/SimplifyJobs/Summer2026-Internships/contents/README.md';
 

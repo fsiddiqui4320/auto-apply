@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@tailwindcss/vite": "^4.1.18",
     "@types/diff": "^7.0.2",
     "clsx": "^2.1.1",
     "diff": "^8.0.3",

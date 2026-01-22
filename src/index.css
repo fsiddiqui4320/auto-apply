@@ -1,12 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --radius: 0.5rem;
 }
 
+@theme {
+  --color-primary: hsl(152, 60%, 85%);
+  /* Add other custom theme variables here if defined in config previously, 
+     but v4 uses CSS variables for theme primarily. */
+}
+
+/* Re-adding standard styles */
 body {
-  @apply bg-gray-50 text-gray-900;
   font-family: 'Inter', sans-serif;
+  @apply bg-gray-50 text-gray-900;
 }
